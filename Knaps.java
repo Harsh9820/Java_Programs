@@ -1,39 +1,36 @@
 import java.util.Scanner;
 
 public class Knaps {
-
-    static int getMaxDens(int n, int[] v, int[] w){
-        int maxIndex = 0;
-		double maxVal = 0;
-        for(int i = 0; i< n; i++){
-            if(w[i] != 0 && ((double) v[i] / w[i] < maxVal)){
-                maxIndex = i;
-                maxVal = ((double) v[i] / w[i]);
-            }
+    static int BestItem(int[] w, int[] v, int n){
+        int maxValue = 0;
+        int index = 0;
+        for(int i =0;i<n;i++){
+            if(w[i] > 0){
+                if(v[i] / w[i] > maxValue){
+                    maxValue = v[i] / w[i];
+                    index = i;
+                }
+            }   
         }
-        return maxIndex;
+        return index;
     }
-
-    static double getOptimalValue(int n, int c, int[] v, int[] w){
-        int sum = 0;
-        double val = 0;
-        for(int j = 0; j < n; j++){
-            sum += w[j];
-        }
-        for(int i = 0; i < n; i++){
-            if (c <=0) return val;
-            else if(sum <= c){
-                val += (double) v[i] * w[i];
+    static double knapSack(int c, int[] w, int[] v, int n){
+        //int[] res = new int[n];
+        double total = 0;
+        
+        for(int i = 0; i< n; i++){
+            if(c==0){
+                return total;
             }
             else{
-                int index = getMaxDens(n, v, w);
-                int a = Math.min(c, w[index]);
-                val += a * (double) v[index] / w[index];
-                w[index] -= a;
-                c -= a;
+                int bI = BestItem(w, v, n);
+                if(i == bI && c > 0){
+                    total = total + (double)(v[i] / w[i]) * w[i];
+                    c = c - w[i];
+                }
             }
         }
-        return val;
+        return total;
     }
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
@@ -45,7 +42,6 @@ public class Knaps {
             values[i] = sc.nextInt();
             weights[i] = sc.nextInt();
         }
-        System.out.println(getOptimalValue(n, capacity, values, weights));
-        sc.close();
+        System.out.println(knapSack(capacity, weights, values, n));
     }
 }
